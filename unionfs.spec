@@ -11,7 +11,7 @@ Release:        %{_rel}
 License:	GPL v2
 Group:		Base/Kernel
 Source0:	ftp://ftp.fsl.cs.sunysb.edu/pub/unionfs/unionfs-%{version}.tar.gz
-# Source0-md5:	0e01dd45e60f713a5a5146e1a5810268
+# Source0-md5:	6d7f0b7e111d40cd8799510c6a9eca92
 URL:		http://www.filesystems.org/project-unionfs.html
 %{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.7}
 BuildRequires:	rpmbuild(macros) >= 1.153
