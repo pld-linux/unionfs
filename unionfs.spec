@@ -1,24 +1,30 @@
 #
 # Conditional build:
 %bcond_without	kernel		# don't build kernel modules
-%bcond_without	userspace	# don't build userspace utilities
+%bcond_without	userspace	# don't build userspace programs
 %bcond_without	dist_kernel	# without distribution kernel
 %bcond_without	smp		# don't build SMP module
 %bcond_with	verbose		# verbose build (V=1)
-#
+
+%if %{without kernel}
+%undefine	with_dist_kernel
+%endif
+
 Summary:	A Stackable Unification File System
 Summary(pl):	Stakowalny, unifikuj±cy system plików
 Name:		unionfs
 Version:	1.0.13
-%define         _rel    0.1
+%define         _rel    1
 Release:        %{_rel}
 License:	GPL v2
 Group:		Base/Kernel
 Source0:	ftp://ftp.fsl.cs.sunysb.edu/pub/unionfs/unionfs-%{version}.tar.gz
 # Source0-md5:	1dca48ff260dacf890b8040a3cea55b3
 URL:		http://www.filesystems.org/project-unionfs.html
+%if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.7}
-BuildRequires:	rpmbuild(macros) >= 1.153
+BuildRequires:	rpmbuild(macros) >= 1.217
+%endif
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -40,34 +46,38 @@ Unionfs pozwala na dowolne mieszanie ga³êzi tylko do odczytu oraz do
 odczytu i zapisu, a tak¿e wstawianie i usuwanie ga³êzi w dowolnym
 miejscu.
 
-%package -n kernel-unionfs
+%package -n kernel-fs-unionfs
 Summary:	Linux driver for unionfs
 Summary(pl):	Sterownik Linuksa dla unionfs
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
-%{?with_dist_kernel:%requires_releq_kernel_up}
 Requires(post,postun):	/sbin/depmod
-Provides:	kernel-unionfs = %{version}-%{_rel}@%{_kernel_ver_str}
+%if %{with dist_kernel}
+%requires_releq_kernel_up
+Requires(postun):	%releq_kernel_up
+%endif
 
-%description -n kernel-unionfs
+%description -n kernel-fs-unionfs
 Linux driver for unionfs.
 
-%description -n kernel-unionfs -l pl
+%description -n kernel-fs-unionfs -l pl
 Sterownik Linuksa dla unionfs.
 
-%package -n kernel-smp-unionfs
+%package -n kernel-smp-fs-unionfs
 Summary:	Linux SMP driver for unionfs
 Summary(pl):	Sterownik Linuksa SMP dla unionfs
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
-%{?with_dist_kernel:%requires_releq_kernel_smp}
-Requires(post,postun):	/sbin/depmod
+%if %{with dist_kernel}
+%requires_releq_kernel_smp
+Requires(postun):	%releq_kernel_smp
+%endif
 Provides:	kernel-unionfs = %{version}-%{_rel}@%{_kernel_ver_str}
 
-%description -n kernel-smp-unionfs
+%description -n kernel-smp-fs-unionfs
 Linux SMP driver unionfs.
 
-%description -n kernel-smp-unionfs -l pl
+%description -n kernel-smp-fs-unionfs -l pl
 Sterownik Linuksa SMP dla unionfs.
 
 %prep
@@ -96,6 +106,11 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
 done
 %endif
 
+%if %{with userspace}
+%{__make} utils \
+	UNIONFS_OPT_CFLAG="%{rpmcflags}"
+%endif
+
 %install
 rm -rf $RPM_BUILD_ROOT
 
@@ -111,23 +126,23 @@ install unionfs-smp.ko \
 
 %if %{with userspace}
 %{__make} install-utils \
-	PREFIX=$RPM_BUILD_ROOT/usr \
+	PREFIX=$RPM_BUILD_ROOT%{_prefix} \
 	MANDIR=$RPM_BUILD_ROOT%{_mandir}
 %endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post -n kernel-unionfs
+%post -n kernel-fs-unionfs
 %depmod %{_kernel_ver}
 
-%postun -n kernel-unionfs
+%postun -n kernel-fs-unionfs
 %depmod %{_kernel_ver}
 
-%post -n kernel-smp-unionfs
+%post -n kernel-smp-fs-unionfs
 %depmod %{_kernel_ver}smp
 
-%postun -n kernel-smp-unionfs
+%postun -n kernel-smp-fs-unionfs
 %depmod %{_kernel_ver}smp
 
 %if %{with userspace}
@@ -139,12 +154,12 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %if %{with kernel}
-%files -n kernel-unionfs
+%files -n kernel-fs-unionfs
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}/kernel/fs/*.ko*
 
 %if %{with smp} && %{with dist_kernel}
-%files -n kernel-smp-unionfs
+%files -n kernel-smp-fs-unionfs
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}smp/kernel/fs/*.ko*
 %endif
