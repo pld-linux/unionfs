@@ -14,7 +14,7 @@ Summary:	A Stackable Unification File System
 Summary(pl):	Stakowalny, unifikuj±cy system plików
 Name:		unionfs
 Version:	1.0.13
-%define         _rel    1
+%define         _rel    2
 Release:        %{_rel}
 License:	GPL v2
 Group:		Base/Kernel
@@ -82,6 +82,10 @@ Sterownik Linuksa SMP dla unionfs.
 
 %prep
 %setup -q
+
+#disable debug
+sed -i 's/-g//' Makefile
+echo " EXTRACFLAGS=-DNODEBUG" > fistdev.mk
 
 %build
 %if %{with kernel}
