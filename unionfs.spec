@@ -25,6 +25,7 @@ URL:		http://www.filesystems.org/project-unionfs.html
 %{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.7}
 BuildRequires:	rpmbuild(macros) >= 1.217
 %endif
+BuildRequires:  libuuid-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -72,7 +73,6 @@ Group:		Base/Kernel
 %requires_releq_kernel_smp
 Requires(postun):	%releq_kernel_smp
 %endif
-BuildRequires:  libuuid-devel
 Provides:	kernel-unionfs = %{version}-%{_rel}@%{_kernel_ver_str}
 
 %description -n kernel-smp-fs-unionfs
