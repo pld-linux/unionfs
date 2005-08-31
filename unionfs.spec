@@ -72,6 +72,7 @@ Group:		Base/Kernel
 %requires_releq_kernel_smp
 Requires(postun):	%releq_kernel_smp
 %endif
+BuildRequires:  libuuid-devel
 Provides:	kernel-unionfs = %{version}-%{_rel}@%{_kernel_ver_str}
 
 %description -n kernel-smp-fs-unionfs
