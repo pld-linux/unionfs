@@ -13,13 +13,13 @@
 Summary:	A Stackable Unification File System
 Summary(pl):	Stakowalny, unifikuj±cy system plików
 Name:		unionfs
-Version:	1.0.13
-%define         _rel    2
+Version:	1.0.14
+%define         _rel    1
 Release:        %{_rel}
 License:	GPL v2
 Group:		Base/Kernel
 Source0:	ftp://ftp.fsl.cs.sunysb.edu/pub/unionfs/unionfs-%{version}.tar.gz
-# Source0-md5:	1dca48ff260dacf890b8040a3cea55b3
+# Source0-md5:	6b6e1a8b13b9e605462035fa6621ed3b
 URL:		http://www.filesystems.org/project-unionfs.html
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.7}
