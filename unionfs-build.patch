@@ -1,0 +1,14 @@
+diff -urN unionfs-1.1.2.org/Makefile unionfs-1.1.2/Makefile
+--- unionfs-1.1.2.org/Makefile	2006-01-25 22:58:11.000000000 +0100
++++ unionfs-1.1.2/Makefile	2006-01-29 00:22:15.652338750 +0100
+@@ -29,8 +29,8 @@
+ 
+ CC	= gcc
+ KERNELVERSION=$(shell echo $(KVERS) | cut -d. -f1,2)
+-EXTRA_CFLAGS += ${TOPINC} -Wall -Werror ${EXTRACFLAGS} ${UNIONFS_DEBUG_CFLAG} ${UNIONFS_OPT_CFLAG} ${UNIONFS_VERSION_CFLAG}
+-UCFLAGS = -I. ${UNIONFS_DEBUG_CFLAG} ${UNIONFS_OPT_CFLAG} -Wall -Werror ${EXTRAUCFLAGS}  ${UNIONFS_VERSION_CFLAG}
++EXTRA_CFLAGS += ${TOPINC} -Wall ${EXTRACFLAGS} ${UNIONFS_DEBUG_CFLAG} ${UNIONFS_OPT_CFLAG} ${UNIONFS_VERSION_CFLAG}
++UCFLAGS = -I. ${UNIONFS_DEBUG_CFLAG} ${UNIONFS_OPT_CFLAG} -Wall ${EXTRAUCFLAGS}  ${UNIONFS_VERSION_CFLAG}
+ 
+ obj-m := unionfs.o
+ unionfs-objs := subr.o dentry.o file.o inode.o main.o super.o \

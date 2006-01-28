@@ -24,6 +24,7 @@ License:	GPL v2
 Group:		Base/Kernel
 Source0:	ftp://ftp.fsl.cs.sunysb.edu/pub/unionfs/unionfs-%{version}.tar.gz
 # Source0-md5:	ed0170a3b0f1bd8a213ac2a96052f33a
+Patch0:		%{name}-build.patch
 URL:		http://www.filesystems.org/project-unionfs.html
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.7}
@@ -87,10 +88,10 @@ Sterownik Linuksa SMP dla unionfs.
 
 %prep
 %setup -q
+%patch0 -p1
 
-#disable debug
-sed -i 's/-g//' Makefile
-echo " EXTRACFLAGS=-DNODEBUG" > fistdev.mk
+# disable debug, enable xattr
+echo " EXTRACFLAGS=-DNODEBUG -DUNIONFS_XATTR" > fistdev.mk
 
 %build
 %if %{with kernel}
@@ -128,6 +129,7 @@ done
 
 %if %{with userspace}
 %{__make} utils \
+	CC="%{__cc}" \
 	UNIONFS_OPT_CFLAG="%{rpmcflags}"
 %endif
 
