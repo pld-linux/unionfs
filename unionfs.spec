@@ -90,38 +90,25 @@ Sterownik Linuksa SMP dla unionfs.
 %setup -q
 %patch0 -p1
 
-# disable debug, enable xattr
-echo " EXTRACFLAGS=-DNODEBUG -DUNIONFS_XATTR" > fistdev.mk
-
 %build
 %if %{with kernel}
 for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}; do
 	if [ ! -r "%{_kernelsrcdir}/config-$cfg" ]; then
 		exit 1
 	fi
-	rm -rf include
-	install -d include/{config,linux}
-	ln -sf %{_kernelsrcdir}/config-$cfg .config
-	ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h include/linux/autoconf.h
-%ifarch ppc
-        if [ -d "%{_kernelsrcdir}/include/asm-powerpc" ]; then
-                install -d include/asm
-                cp -a %{_kernelsrcdir}/include/asm-%{_target_base_arch}/* include/asm
-                cp -a %{_kernelsrcdir}/include/asm-powerpc/* include/asm
-        else
-                ln -sf %{_kernelsrcdir}/include/asm-%{_target_base_arch} include/asm
-        fi
-%else
-        ln -sf %{_kernelsrcdir}/include/asm-%{_target_base_arch} include/asm
-%endif
-	ln -sf %{_kernelsrcdir}/Module.symvers-$cfg Module.symvers
-	touch include/config/MARKER
+        install -d o/include/linux
+        ln -sf %{_kernelsrcdir}/config-$cfg o/.config
+        ln -sf %{_kernelsrcdir}/Module.symvers-$cfg o/Module.symvers
+        ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h o/include/linux/autoconf.h
+        %{__make} -C %{_kernelsrcdir} O=$PWD/o prepare scripts
+
 	%{__make} -C %{_kernelsrcdir} clean \
 		RCS_FIND_IGNORE="-name '*.ko' -o" \
-		M=$PWD O=$PWD \
+		M=$PWD O=$PWD/o \
 		%{?with_verbose:V=1}
 	%{__make} -C %{_kernelsrcdir} \
-		M=$PWD O=$PWD \
+		M=$PWD O=$PWD/o \
+		EXTRACFLAGS="-DUNIONFS_NDEBUG -DUNIONFS_XATTR" \
 		%{?with_verbose:V=1}
 	mv unionfs{,-$cfg}.ko
 done
