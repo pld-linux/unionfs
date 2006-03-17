@@ -18,7 +18,7 @@ Summary:	A Stackable Unification File System
 Summary(pl):	Stakowalny, unifikuj±cy system plików
 Name:		unionfs
 Version:	1.1.2
-%define         _rel    2
+%define         _rel    3
 Release:        %{_rel}
 License:	GPL v2
 Group:		Base/Kernel
