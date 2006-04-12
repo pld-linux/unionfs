@@ -14,20 +14,20 @@
 %undefine	with_smp
 %endif
 
+%define         _rel    3
 Summary:	A Stackable Unification File System
 Summary(pl):	Stakowalny, unifikuj±cy system plików
 Name:		unionfs
 Version:	1.1.2
-%define         _rel    3
-Release:        %{_rel}
+Release:	%{_rel}
 License:	GPL v2
 Group:		Base/Kernel
-Source0:	ftp://ftp.fsl.cs.sunysb.edu/pub/unionfs/unionfs-%{version}.tar.gz
+Source0:	ftp://ftp.fsl.cs.sunysb.edu/pub/unionfs/%{name}-%{version}.tar.gz
 # Source0-md5:	ed0170a3b0f1bd8a213ac2a96052f33a
 Patch0:		%{name}-build.patch
 URL:		http://www.filesystems.org/project-unionfs.html
 %if %{with kernel}
-%{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.7}
+%{?with_dist_kernel:BuildRequires:	kernel-module-build >= 3:2.6.7}
 BuildRequires:	rpmbuild(macros) >= 1.217
 %endif
 BuildRequires:	libuuid-devel
@@ -38,8 +38,8 @@ Unionfs is a stackable unification file system, which can appear to
 merge the contents of several directories (branches), while keeping
 their physical content separate. Unionfs is useful for unified source
 tree management, merged contents of split CD-ROM, merged separate
-software package directories, data grids, and more. Unionfs allows
-any mix of read-only and read-write branches, as well as insertion and
+software package directories, data grids, and more. Unionfs allows any
+mix of read-only and read-write branches, as well as insertion and
 deletion of branches anywhere in the fan-out.
 
 %description -l pl
@@ -96,11 +96,11 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
 	if [ ! -r "%{_kernelsrcdir}/config-$cfg" ]; then
 		exit 1
 	fi
-        install -d o/include/linux
-        ln -sf %{_kernelsrcdir}/config-$cfg o/.config
-        ln -sf %{_kernelsrcdir}/Module.symvers-$cfg o/Module.symvers
-        ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h o/include/linux/autoconf.h
-        %{__make} -C %{_kernelsrcdir} O=$PWD/o prepare scripts
+	install -d o/include/linux
+	ln -sf %{_kernelsrcdir}/config-$cfg o/.config
+	ln -sf %{_kernelsrcdir}/Module.symvers-$cfg o/Module.symvers
+	ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h o/include/linux/autoconf.h
+	%{__make} -C %{_kernelsrcdir} O=$PWD/o prepare scripts
 
 	%{__make} -C %{_kernelsrcdir} clean \
 		RCS_FIND_IGNORE="-name '*.ko' -o" \
