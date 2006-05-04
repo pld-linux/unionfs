@@ -100,15 +100,26 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
 	ln -sf %{_kernelsrcdir}/config-$cfg o/.config
 	ln -sf %{_kernelsrcdir}/Module.symvers-$cfg o/Module.symvers
 	ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h o/include/linux/autoconf.h
+%if %{with dist_kernel}
 	%{__make} -C %{_kernelsrcdir} O=$PWD/o prepare scripts
+%else
+	install -d o/include/config
+	touch o/include/config/MARKER
+	ln -sf %{_kernelsrcdir}/scripts o/scripts
+%endif
 
 	%{__make} -C %{_kernelsrcdir} clean \
 		RCS_FIND_IGNORE="-name '*.ko' -o" \
+		SYSSRC=%{_kernelsrcdir} \
+		SYSOUT=$PWD/o \
 		M=$PWD O=$PWD/o \
 		%{?with_verbose:V=1}
-	%{__make} -C %{_kernelsrcdir} \
-		M=$PWD O=$PWD/o \
+	%{__make} -C %{_kernelsrcdir} modules \
+		CC="%{__cc}" CPP="%{__cpp}" \
 		EXTRACFLAGS="-DUNIONFS_NDEBUG -DUNIONFS_XATTR" \
+		SYSSRC=%{_kernelsrcdir} \
+		SYSOUT=$PWD/o \
+		M=$PWD O=$PWD/o \
 		%{?with_verbose:V=1}
 	mv unionfs{,-$cfg}.ko
 done
