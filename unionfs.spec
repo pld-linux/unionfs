@@ -14,16 +14,19 @@
 %undefine	with_smp
 %endif
 
-%define         _rel    3
+#define		_snap	20060531-2316
+%define         _rel    1
+#
 Summary:	A Stackable Unification File System
 Summary(pl):	Stakowalny, unifikuj±cy system plików
 Name:		unionfs
-Version:	1.1.2
-Release:	%{_rel}
+Version:	1.1.4
+Release:	%{?_snap:0.%(echo %{_snap} | tr - _).}%{_rel}
 License:	GPL v2
 Group:		Base/Kernel
+#Source0:	ftp://ftp.fsl.cs.sunysb.edu/pub/unionfs/snapshots/%{name}-%{_snap}.tar.gz
 Source0:	ftp://ftp.fsl.cs.sunysb.edu/pub/unionfs/%{name}-%{version}.tar.gz
-# Source0-md5:	ed0170a3b0f1bd8a213ac2a96052f33a
+# Source0-md5:	4b0a5393f6a41a24555c2cd30a689b2c
 Patch0:		%{name}-build.patch
 URL:		http://www.filesystems.org/project-unionfs.html
 %if %{with kernel}
@@ -87,7 +90,7 @@ Linux SMP driver unionfs.
 Sterownik Linuksa SMP dla unionfs.
 
 %prep
-%setup -q
+%setup -q %{?_snap:-n %{name}-%{_snap}}
 %patch0 -p1
 
 %build
@@ -101,7 +104,7 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
 	ln -sf %{_kernelsrcdir}/Module.symvers-$cfg o/Module.symvers
 	ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h o/include/linux/autoconf.h
 %if %{with dist_kernel}
-	%{__make} -C %{_kernelsrcdir} O=$PWD/o prepare scripts
+	%{__make} -C %{_kernelsrcdir} O=$PWD/o prepare scripts -j1
 %else
 	install -d o/include/config
 	touch o/include/config/MARKER
