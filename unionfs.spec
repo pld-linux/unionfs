@@ -17,17 +17,17 @@
 Summary:	A Stackable Unification File System
 Summary(pl):	Stakowalny, unifikuj±cy system plików
 Name:		unionfs
-Version:	1.1.2
-%define         _rel    3
+Version:	1.2
+%define         _rel    1
 Release:        %{_rel}
 License:	GPL v2
 Group:		Base/Kernel
 Source0:	ftp://ftp.fsl.cs.sunysb.edu/pub/unionfs/unionfs-%{version}.tar.gz
-# Source0-md5:	ed0170a3b0f1bd8a213ac2a96052f33a
+# Source0-md5:	2a8c6ef320efc43af91074ab47046f09
 Patch0:		%{name}-build.patch
 URL:		http://www.filesystems.org/project-unionfs.html
 %if %{with kernel}
-%{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.7}
+%{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.16}
 BuildRequires:	rpmbuild(macros) >= 1.217
 %endif
 BuildRequires:	libuuid-devel
