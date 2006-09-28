@@ -34,7 +34,7 @@ Patch0:		%{name}-build.patch
 Patch1:		%{name}-vserver.patch
 URL:		http://www.filesystems.org/project-unionfs.html
 %if %{with kernel}
-%{?with_dist_kernel:BuildRequires:	kernel-module-build >= 3:2.6.7}
+%{?with_dist_kernel:BuildRequires:	kernel-module-build = 3:2.6.16}
 BuildRequires:	rpmbuild(macros) >= 1.217
 %endif
 BuildRequires:	libuuid-devel
