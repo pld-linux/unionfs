@@ -1,0 +1,4 @@
+- complaint with template-kernel-module.
+- build utils in %build.
+- kernel modules renamed to kernel-{,smp-}fs-unionfs.
+- release 1.
