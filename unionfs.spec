@@ -9,7 +9,7 @@
 %bcond_with	verbose		# verbose build (V=1)
 %bcond_without	vserver		# build with vserver patches
 
-%if %{without kernel}
+%if !%{with kernel}
 %undefine	with_dist_kernel
 %endif
 
