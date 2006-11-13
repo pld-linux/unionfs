@@ -109,7 +109,7 @@ Sterownik Linuksa SMP dla unionfs.
 %if %{with userspace}
 %{__make} utils \
 	CC="%{__cc}" \
-	UNIONFS_OPT_CFLAG="%{rpmcflags}"
+	UNIONFS_OPT_CFLAG="%{rpmcflags} %{rpmldflags}"
 %endif
 
 %install
