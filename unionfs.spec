@@ -23,18 +23,20 @@
 Summary:	A Stackable Unification File System
 Summary(pl):	Stakowalny, unifikuj±cy system plików
 Name:		unionfs
-Version:	1.2
+Version:	1.3
 Release:	%{?_snap:0.%(echo %{_snap} | tr - _).}%{_rel}
 License:	GPL v2
 Group:		Base/Kernel
 #Source0:	ftp://ftp.fsl.cs.sunysb.edu/pub/unionfs/snapshots/%{name}-%{_snap}.tar.gz
 Source0:	ftp://ftp.fsl.cs.sunysb.edu/pub/unionfs/%{name}-%{version}.tar.gz
-# Source0-md5:	2a8c6ef320efc43af91074ab47046f09
+# Source0-md5:	af5106f29fb0ddb12b028f522fa0463c
 Patch0:		%{name}-build.patch
 #Patch1:		%{name}-vserver.patch
 URL:		http://www.filesystems.org/project-unionfs.html
 %if %{with kernel}
-%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build = 3:2.6.16}
+%if %{with dist_kernel}
+BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.17
+BuildRequires:	kernel%{_alt_kernel}-module-build < 3:2.6.18
 BuildRequires:	rpmbuild(macros) >= 1.326
 %endif
 BuildRequires:	libuuid-devel
@@ -101,7 +103,7 @@ Sterownik Linuksa SMP dla unionfs.
 %build
 %if %{with kernel}
 %build_kernel_modules -m unionfs \
-	EXTRA_CFLAGS="-DUNIONFS_NDEBUG -DUNIONFS_XATTR"
+	EXTRACFLAGS="-DUNIONFS_NDEBUG -DUNIONFS_XATTR"
 %endif
 
 %if %{with userspace}
