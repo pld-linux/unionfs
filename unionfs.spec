@@ -34,7 +34,9 @@ Patch0:		%{name}-build.patch
 #Patch1:		%{name}-vserver.patch
 URL:		http://www.filesystems.org/project-unionfs.html
 %if %{with kernel}
-%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build = 3:2.6.16}
+%if %{with dist_kernel}
+BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.16
+BuildRequires:	kernel%{_alt_kernel}-module-build < 3:2.6.17
 BuildRequires:	rpmbuild(macros) >= 1.326
 %endif
 BuildRequires:	libuuid-devel
@@ -101,7 +103,7 @@ Sterownik Linuksa SMP dla unionfs.
 %build
 %if %{with kernel}
 %build_kernel_modules -m unionfs \
-	EXTRA_CFLAGS="-DUNIONFS_NDEBUG -DUNIONFS_XATTR"
+	EXTRACFLAGS="-DUNIONFS_NDEBUG -DUNIONFS_XATTR"
 %endif
 
 %if %{with userspace}
