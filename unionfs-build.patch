@@ -1,6 +1,6 @@
-diff -Nur unionfs-1.3.orig/Makefile unionfs-1.3.build/Makefile
---- unionfs-1.3.orig/Makefile	2006-06-26 19:46:44.000000000 +0000
-+++ unionfs-1.3.build/Makefile	2006-11-13 20:35:25.000000000 +0000
+diff -Nur unionfs-1.2.orig/Makefile unionfs-1.2.build/Makefile
+--- unionfs-1.2.orig/Makefile	2006-06-09 07:04:43.000000000 +0000
++++ unionfs-1.2.build/Makefile	2006-11-13 20:44:07.000000000 +0000
 @@ -16,7 +16,7 @@
  SUP_EXTRA=
  TAROPTS = czvf
@@ -30,9 +30,9 @@ diff -Nur unionfs-1.3.orig/Makefile unionfs-1.3.build/Makefile
  
  install-utils: utils
  	make -C utils install PREFIX=${PREFIX}
-diff -Nur unionfs-1.3.orig/utils/Makefile unionfs-1.3.build/utils/Makefile
---- unionfs-1.3.orig/utils/Makefile	2006-06-26 19:46:45.000000000 +0000
-+++ unionfs-1.3.build/utils/Makefile	2006-11-13 20:35:59.000000000 +0000
+diff -Nur unionfs-1.2.orig/utils/Makefile unionfs-1.2.build/utils/Makefile
+--- unionfs-1.2.orig/utils/Makefile	2006-06-09 07:04:44.000000000 +0000
++++ unionfs-1.2.build/utils/Makefile	2006-11-13 20:43:53.000000000 +0000
 @@ -4,13 +4,13 @@
  all:	${BINS}
  
@@ -50,3 +50,12 @@ diff -Nur unionfs-1.3.orig/utils/Makefile unionfs-1.3.build/utils/Makefile
  
  TAGS: $(wildcard *.[ch])
  	etags -t $^
+@@ -23,7 +23,7 @@
+ 
+ PHONY. utils: ${BINS}
+ 
+-install-utils: utils
++install: utils
+ 	mkdir -p ${PREFIX}/sbin
+ 	cp unionctl ${PREFIX}/sbin
+ 	cp uniondbg ${PREFIX}/sbin
