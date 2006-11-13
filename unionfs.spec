@@ -31,11 +31,11 @@ Group:		Base/Kernel
 Source0:	ftp://ftp.fsl.cs.sunysb.edu/pub/unionfs/%{name}-%{version}.tar.gz
 # Source0-md5:	2a8c6ef320efc43af91074ab47046f09
 Patch0:		%{name}-build.patch
-Patch1:		%{name}-vserver.patch
+#Patch1:		%{name}-vserver.patch
 URL:		http://www.filesystems.org/project-unionfs.html
 %if %{with kernel}
-%{?with_dist_kernel:BuildRequires:	kernel-module-build = 3:2.6.16}
-BuildRequires:	rpmbuild(macros) >= 1.217
+%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build = 3:2.6.16}
+BuildRequires:	rpmbuild(macros) >= 1.326
 %endif
 BuildRequires:	libuuid-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -59,7 +59,7 @@ Unionfs pozwala na dowolne mieszanie ga³êzi tylko do odczytu oraz do
 odczytu i zapisu, a tak¿e wstawianie i usuwanie ga³êzi w dowolnym
 miejscu.
 
-%package -n kernel-fs-unionfs
+%package -n kernel%{_alt_kernel}-fs-unionfs
 Summary:	Linux driver for unionfs
 Summary(pl):	Sterownik Linuksa dla unionfs
 Release:	%{_rel}@%{_kernel_ver_str}
@@ -70,13 +70,13 @@ Requires(post,postun):	/sbin/depmod
 Requires(postun):	%releq_kernel_up
 %endif
 
-%description -n kernel-fs-unionfs
+%description -n kernel%{_alt_kernel}-fs-unionfs
 Linux driver for unionfs.
 
-%description -n kernel-fs-unionfs -l pl
+%description -n kernel%{_alt_kernel}-fs-unionfs -l pl
 Sterownik Linuksa dla unionfs.
 
-%package -n kernel-smp-fs-unionfs
+%package -n kernel%{_alt_kernel}-smp-fs-unionfs
 Summary:	Linux SMP driver for unionfs
 Summary(pl):	Sterownik Linuksa SMP dla unionfs
 Release:	%{_rel}@%{_kernel_ver_str}
@@ -85,52 +85,23 @@ Group:		Base/Kernel
 %requires_releq_kernel_smp
 Requires(postun):	%releq_kernel_smp
 %endif
-Provides:	kernel-unionfs = %{version}-%{_rel}@%{_kernel_ver_str}
+Provides:	kernel%{_alt_kernel}-unionfs = %{version}-%{_rel}@%{_kernel_ver_str}
 
-%description -n kernel-smp-fs-unionfs
+%description -n kernel%{_alt_kernel}-smp-fs-unionfs
 Linux SMP driver unionfs.
 
-%description -n kernel-smp-fs-unionfs -l pl
+%description -n kernel%{_alt_kernel}-smp-fs-unionfs -l pl
 Sterownik Linuksa SMP dla unionfs.
 
 %prep
 %setup -q %{?_snap:-n %{name}-%{_snap}}
 %patch0 -p1
-%{?with_vserver:%patch1 -p1}
+#%{?with_vserver:%patch1 -p1}
 
 %build
 %if %{with kernel}
-for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}; do
-	if [ ! -r "%{_kernelsrcdir}/config-$cfg" ]; then
-		exit 1
-	fi
-	install -d o/include/linux
-	ln -sf %{_kernelsrcdir}/config-$cfg o/.config
-	ln -sf %{_kernelsrcdir}/Module.symvers-$cfg o/Module.symvers
-	ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h o/include/linux/autoconf.h
-%if %{with dist_kernel}
-	%{__make} -j1 -C %{_kernelsrcdir} O=$PWD/o prepare scripts
-%else
-	install -d o/include/config
-	touch o/include/config/MARKER
-	ln -sf %{_kernelsrcdir}/scripts o/scripts
-%endif
-
-	%{__make} -C %{_kernelsrcdir} clean \
-		RCS_FIND_IGNORE="-name '*.ko' -o" \
-		SYSSRC=%{_kernelsrcdir} \
-		SYSOUT=$PWD/o \
-		M=$PWD O=$PWD/o \
-		%{?with_verbose:V=1}
-	%{__make} -C %{_kernelsrcdir} modules \
-		CC="%{__cc}" CPP="%{__cpp}" \
-		EXTRACFLAGS="-DUNIONFS_NDEBUG -DUNIONFS_XATTR" \
-		SYSSRC=%{_kernelsrcdir} \
-		SYSOUT=$PWD/o \
-		M=$PWD O=$PWD/o \
-		%{?with_verbose:V=1}
-	mv unionfs{,-$cfg}.ko
-done
+%build_kernel_modules -m unionfs \
+	EXTRA_CFLAGS="-DUNIONFS_NDEBUG -DUNIONFS_XATTR"
 %endif
 
 %if %{with userspace}
@@ -143,13 +114,7 @@ done
 rm -rf $RPM_BUILD_ROOT
 
 %if %{with kernel}
-install -d $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}{,smp}/kernel/fs
-install unionfs-%{?with_dist_kernel:up}%{!?with_dist_kernel:nondist}.ko \
-	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/kernel/fs/unionfs.ko
-%if %{with smp} && %{with dist_kernel}
-install unionfs-smp.ko \
-	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}smp/kernel/fs/unionfs.ko
-%endif
+%install_kernel_modules -m unionfs -d kernel/fs
 %endif
 
 %if %{with userspace}
@@ -161,16 +126,16 @@ install unionfs-smp.ko \
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post -n kernel-fs-unionfs
+%post -n kernel%{_alt_kernel}-fs-unionfs
 %depmod %{_kernel_ver}
 
-%postun -n kernel-fs-unionfs
+%postun -n kernel%{_alt_kernel}-fs-unionfs
 %depmod %{_kernel_ver}
 
-%post -n kernel-smp-fs-unionfs
+%post -n kernel%{_alt_kernel}-smp-fs-unionfs
 %depmod %{_kernel_ver}smp
 
-%postun -n kernel-smp-fs-unionfs
+%postun -n kernel%{_alt_kernel}-smp-fs-unionfs
 %depmod %{_kernel_ver}smp
 
 %if %{with userspace}
@@ -182,12 +147,12 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %if %{with kernel}
-%files -n kernel-fs-unionfs
+%files -n kernel%{_alt_kernel}-fs-unionfs
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}/kernel/fs/*.ko*
 
 %if %{with smp} && %{with dist_kernel}
-%files -n kernel-smp-fs-unionfs
+%files -n kernel%{_alt_kernel}-smp-fs-unionfs
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}smp/kernel/fs/*.ko*
 %endif
