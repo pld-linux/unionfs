@@ -37,7 +37,7 @@ URL:		http://www.filesystems.org/project-unionfs.html
 %if %{with dist_kernel}
 BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.17
 BuildRequires:	kernel%{_alt_kernel}-module-build < 3:2.6.18
-BuildRequires:	rpmbuild(macros) >= 1.326
+BuildRequires:	rpmbuild(macros) >= 1.330
 %endif
 BuildRequires:	libuuid-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
