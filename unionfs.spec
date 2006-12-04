@@ -33,8 +33,7 @@ Source0:	ftp://ftp.fsl.cs.sunysb.edu/pub/unionfs/%{name}-%{version}.tar.gz
 Patch0:		%{name}-build.patch
 #Patch1:		%{name}-vserver.patch
 URL:		http://www.filesystems.org/project-unionfs.html
-%if %{with kernel}
-%if %{with dist_kernel}
+%if %{with kernel} && %{with dist_kernel}
 BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.17
 BuildRequires:	kernel%{_alt_kernel}-module-build < 3:2.6.18
 BuildRequires:	rpmbuild(macros) >= 1.330
