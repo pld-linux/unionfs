@@ -1,5 +1,3 @@
-# TODO
-# - patch for vserver vfs_unlink
 #
 # Conditional build:
 %bcond_without	kernel		# don't build kernel modules
@@ -18,7 +16,7 @@
 %endif
 
 #define		_snap	20060916-2203
-%define         _rel    0.1
+%define         _rel    1
 #
 Summary:	A Stackable Unification File System
 Summary(pl):	Stakowalny, unifikuj±cy system plików
@@ -31,7 +29,7 @@ Group:		Base/Kernel
 Source0:	ftp://ftp.fsl.cs.sunysb.edu/pub/unionfs/%{name}-%{version}.tar.gz
 # Source0-md5:	2a8c6ef320efc43af91074ab47046f09
 Patch0:		%{name}-build.patch
-#Patch1:		%{name}-vserver.patch
+Patch1:		%{name}-vserver.patch
 URL:		http://www.filesystems.org/project-unionfs.html
 %if %{with kernel}
 %if %{with dist_kernel}
@@ -98,7 +96,7 @@ Sterownik Linuksa SMP dla unionfs.
 %prep
 %setup -q %{?_snap:-n %{name}-%{_snap}}
 %patch0 -p1
-#%{?with_vserver:%patch1 -p1}
+%{?with_vserver:%patch1 -p1}
 
 %build
 %if %{with kernel}
