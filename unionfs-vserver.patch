@@ -1,0 +1,229 @@
+diff -urN unionfs-1.2.orig/commonfops.c unionfs-1.2/commonfops.c
+--- unionfs-1.2.orig/commonfops.c	2006-06-09 09:04:43.000000000 +0200
++++ unionfs-1.2/commonfops.c	2006-12-04 13:00:37.000000000 +0100
+@@ -148,7 +148,7 @@
+ 	/* bring it to the same state as an unlinked file */
+ 	hidden_dentry = dtohd_index(dentry, dbstart(dentry));
+ 	hidden_dir_dentry = lock_parent(hidden_dentry);
+-	err = vfs_unlink(hidden_dir_dentry->d_inode, hidden_dentry);
++	err = vfs_unlink(hidden_dir_dentry->d_inode, hidden_dentry, NULL);
+ 	unlock_dir(hidden_dir_dentry);
+ 
+       out:
+diff -urN unionfs-1.2.orig/copyup.c unionfs-1.2/copyup.c
+--- unionfs-1.2.orig/copyup.c	2006-06-09 09:04:43.000000000 +0200
++++ unionfs-1.2/copyup.c	2006-12-04 13:00:37.000000000 +0100
+@@ -234,10 +234,10 @@
+ 	current->fsgid = new_hidden_parent_dentry->d_inode->i_gid;
+ 	if (S_ISDIR(old_hidden_dentry->d_inode->i_mode)) {
+ 		err = vfs_mkdir(new_hidden_parent_dentry->d_inode,
+-				new_hidden_dentry, S_IRWXU);
++				new_hidden_dentry, S_IRWXU, NULL);
+ 	} else if (S_ISLNK(old_hidden_dentry->d_inode->i_mode)) {
+ 		err = vfs_symlink(new_hidden_parent_dentry->d_inode,
+-				  new_hidden_dentry, symbuf, S_IRWXU);
++				  new_hidden_dentry, symbuf, S_IRWXU, NULL);
+ 	} else if (S_ISBLK(old_hidden_dentry->d_inode->i_mode)
+ 		   || S_ISCHR(old_hidden_dentry->d_inode->i_mode)
+ 		   || S_ISFIFO(old_hidden_dentry->d_inode->i_mode)
+@@ -245,7 +245,7 @@
+ 		err = vfs_mknod(new_hidden_parent_dentry->d_inode,
+ 				new_hidden_dentry,
+ 				old_hidden_dentry->d_inode->i_mode,
+-				old_hidden_dentry->d_inode->i_rdev);
++				old_hidden_dentry->d_inode->i_rdev, NULL);
+ 	} else if (S_ISREG(old_hidden_dentry->d_inode->i_mode)) {
+ 		err = vfs_create(new_hidden_parent_dentry->d_inode,
+ 				 new_hidden_dentry, S_IRWXU, NULL);
+@@ -372,7 +372,7 @@
+ 			 * or something else happened so let's unlink; we don't
+ 			 * really care about the return value of vfs_unlink */
+ 			vfs_unlink(new_hidden_parent_dentry->d_inode,
+-				   new_hidden_dentry);
++				   new_hidden_dentry, NULL);
+ 
+ 			goto out_dir;
+ 		}
+@@ -678,7 +678,7 @@
+ 			current->fsuid = hidden_parent_dentry->d_inode->i_uid;
+ 			current->fsgid = hidden_parent_dentry->d_inode->i_gid;
+ 			err = vfs_mkdir(hidden_parent_dentry->d_inode,
+-					hidden_dentry, S_IRWXUGO);
++					hidden_dentry, S_IRWXUGO, NULL);
+ 			current->fsuid = saved_uid;
+ 			current->fsgid = saved_gid;
+ 			if (!err)
+diff -urN unionfs-1.2.orig/dirhelper.c unionfs-1.2/dirhelper.c
+--- unionfs-1.2.orig/dirhelper.c	2006-06-09 09:04:43.000000000 +0200
++++ unionfs-1.2/dirhelper.c	2006-12-04 13:01:59.000000000 +0100
+@@ -87,7 +87,7 @@
+ 				break;
+ 			}
+ 			if (hidden_dentry->d_inode)
+-				err = vfs_unlink(hidden_dir, hidden_dentry);
++				err = vfs_unlink(hidden_dir, hidden_dentry, NULL);
+ 			DPUT(hidden_dentry);
+ 			if (err)
+ 				break;
+diff -urN unionfs-1.2.orig/inode.c unionfs-1.2/inode.c
+--- unionfs-1.2.orig/inode.c	2006-06-09 09:04:43.000000000 +0200
++++ unionfs-1.2/inode.c	2006-12-04 13:00:37.000000000 +0100
+@@ -257,7 +257,7 @@
+ 				       dbstart(new_dentry)))) {
+ 			err =
+ 			    vfs_unlink(hidden_dir_dentry->d_inode,
+-				       whiteout_dentry);
++				       whiteout_dentry, NULL);
+ 		}
+ 		fist_copy_attr_times(dir, hidden_dir_dentry->d_inode);
+ 		dir->i_nlink = get_nlinks(dir);
+@@ -285,7 +285,7 @@
+ 	if (!(err = is_robranch(old_dentry)))
+ 		err =
+ 		    vfs_link(hidden_old_dentry, hidden_dir_dentry->d_inode,
+-			     hidden_new_dentry);
++			     hidden_new_dentry, NULL);
+ 	unlock_dir(hidden_dir_dentry);
+ 
+       docopyup:
+@@ -309,7 +309,7 @@
+ 				err =
+ 				    vfs_link(hidden_old_dentry,
+ 					     hidden_dir_dentry->d_inode,
+-					     hidden_new_dentry);
++					     hidden_new_dentry, NULL);
+ 				unlock_dir(hidden_dir_dentry);
+ 				goto check_link;
+ 			}
+@@ -388,7 +388,7 @@
+ 		if (!(err = is_robranch_super(dentry->d_sb, bstart))) {
+ 			err =
+ 			    vfs_unlink(hidden_dir_dentry->d_inode,
+-				       whiteout_dentry);
++				       whiteout_dentry, NULL);
+ 		}
+ 		DPUT(whiteout_dentry);
+ 
+@@ -434,7 +434,7 @@
+ 			mode = S_IALLUGO;
+ 			err =
+ 			    vfs_symlink(hidden_dir_dentry->d_inode,
+-					hidden_dentry, symname, mode);
++					hidden_dentry, symname, mode, NULL);
+ 		}
+ 		unlock_dir(hidden_dir_dentry);
+ 
+@@ -513,7 +513,7 @@
+ 		if (!(err = is_robranch_super(dentry->d_sb, bstart))) {
+ 			err =
+ 			    vfs_unlink(hidden_parent_dentry->d_inode,
+-				       whiteout_dentry);
++				       whiteout_dentry, NULL);
+ 		}
+ 		DPUT(whiteout_dentry);
+ 
+@@ -552,7 +552,7 @@
+ 		if (!(err = is_robranch_super(dentry->d_sb, bindex))) {
+ 			err =
+ 			    vfs_mkdir(hidden_parent_dentry->d_inode,
+-				      hidden_dentry, mode);
++				      hidden_dentry, mode, NULL);
+ 		}
+ 		unlock_dir(hidden_parent_dentry);
+ 
+@@ -648,7 +648,7 @@
+ 		//found a.wh.foo entry, remove it then do vfs_mkdir
+ 		if (!(err = is_robranch_super(dentry->d_sb, bstart)))
+ 			err = vfs_unlink(hidden_parent_dentry->d_inode,
+-					 whiteout_dentry);
++					 whiteout_dentry, NULL);
+ 		DPUT(whiteout_dentry);
+ 
+ 		unlock_dir(hidden_parent_dentry);
+@@ -682,7 +682,7 @@
+ 		}
+ 		if (!(err = is_robranch_super(dentry->d_sb, bindex))) {
+ 			err = vfs_mknod(hidden_parent_dentry->d_inode,
+-					hidden_dentry, mode, dev);
++					hidden_dentry, mode, dev, NULL);
+ 		}
+ 		/* XXX this could potentially return a negative hidden_dentry! */
+ 		if (err || !hidden_dentry->d_inode) {
+diff -urN unionfs-1.2.orig/rename.c unionfs-1.2/rename.c
+--- unionfs-1.2.orig/rename.c	2006-06-09 09:04:43.000000000 +0200
++++ unionfs-1.2/rename.c	2006-12-04 13:00:37.000000000 +0100
+@@ -85,7 +85,7 @@
+ 		if (!(err = is_robranch_super(old_dentry->d_sb, bindex))) {
+ 			err =
+ 			    vfs_unlink(hidden_wh_dir_dentry->d_inode,
+-				       hidden_wh_dentry);
++				       hidden_wh_dentry, NULL);
+ 		}
+ 		DPUT(hidden_wh_dentry);
+ 		unlock_dir(hidden_wh_dir_dentry);
+@@ -210,7 +210,7 @@
+ 		if (!(err = is_robranch_super(old_dir->i_sb, bindex))) {
+ 			err =
+ 			    vfs_unlink(unlink_dir_dentry->d_inode,
+-				       unlink_dentry);
++				       unlink_dentry, NULL);
+ 		}
+ 
+ 		fist_copy_attr_times(new_dentry->d_parent->d_inode,
+@@ -451,7 +451,7 @@
+ 		if (!(err = is_robranch_super(old_dir->i_sb, bindex)))
+ 			err =
+ 			    vfs_unlink(unlink_dir_dentry->d_inode,
+-				       unlink_dentry);
++				       unlink_dentry, NULL);
+ 
+ 		fist_copy_attr_times(new_dentry->d_parent->d_inode,
+ 				     unlink_dir_dentry->d_inode);
+@@ -599,7 +599,7 @@
+ 		unlink_dir_dentry = lock_parent(unlink_dentry);
+ 		if (!(err = is_robranch_super(old_dir->i_sb, info->new_bstart)))
+ 			err = vfs_unlink(unlink_dir_dentry->d_inode,
+-					 unlink_dentry);
++					 unlink_dentry, NULL);
+ 
+ 		fist_copy_attr_times(new_dentry->d_parent->d_inode,
+ 				     unlink_dir_dentry->d_inode);
+diff -urN unionfs-1.2.orig/unlink.c unionfs-1.2/unlink.c
+--- unionfs-1.2.orig/unlink.c	2006-06-09 09:04:43.000000000 +0200
++++ unionfs-1.2/unlink.c	2006-12-04 13:03:11.000000000 +0100
+@@ -49,7 +49,7 @@
+ 		DGET(hidden_dentry);
+ 		if (!(err = is_robranch_super(dentry->d_sb, bindex)))
+ 			err = vfs_unlink(hidden_dir_dentry->d_inode,
+-					 hidden_dentry);
++					 hidden_dentry, NULL);
+ 		DPUT(hidden_dentry);
+ 		fist_copy_attr_times(dir, hidden_dir_dentry->d_inode);
+ 		unlock_dir(hidden_dir_dentry);
+@@ -117,7 +117,7 @@
+ 	/* avoid destroying the hidden inode if the file is in use */
+ 	DGET(hidden_dentry);
+ 	if (!(err = is_robranch_super(dentry->d_sb, bindex)))
+-		err = vfs_unlink(hidden_dir_dentry->d_inode, hidden_dentry);
++		err = vfs_unlink(hidden_dir_dentry->d_inode, hidden_dentry, NULL);
+ 	DPUT(hidden_dentry);
+ 	fist_copy_attr_times(dir, hidden_dir_dentry->d_inode);
+ 	unlock_dir(hidden_dir_dentry);
+@@ -196,7 +196,7 @@
+ 	/* avoid destroying the hidden inode if the file is in use */
+ 	DGET(hidden_dentry);
+ 	if (!(err = is_robranch(dentry))) {
+-		err = vfs_rmdir(hidden_dir_dentry->d_inode, hidden_dentry);
++		err = vfs_rmdir(hidden_dir_dentry->d_inode, hidden_dentry, NULL);
+ 	}
+ 	DPUT(hidden_dentry);
+ 
+@@ -242,7 +242,7 @@
+ 				 is_robranch_super(dentry->d_sb, bindex))) {
+ 				err =
+ 				    vfs_rmdir(hidden_dir_dentry->d_inode,
+-					      hidden_dentry);
++					      hidden_dentry, NULL);
+ 			}
+ 		} else {
+ 			err = -EISDIR;
