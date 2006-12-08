@@ -6,17 +6,22 @@
 %bcond_without	smp		# don't build SMP module
 %bcond_with	verbose		# verbose build (V=1)
 %bcond_without	vserver		# build with vserver patches
-
+%bcond_with	grsec_kernel	# build for kernel-grsecurity
+#
 %if !%{with kernel}
 %undefine	with_dist_kernel
 %endif
-
+#
+%if %{with kernel} && %{with dist_kernel} && %{with grsec_kernel}
+%define	alt_kernel	grsecurity
+%endif
+#
 %ifarch sparc
 %undefine	with_smp
 %endif
 
 #define		_snap	20060916-2203
-%define         _rel    1
+%define         _rel    2
 #
 Summary:	A Stackable Unification File System
 Summary(pl):	Stakowalny, unifikuj±cy system plików
