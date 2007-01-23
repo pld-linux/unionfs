@@ -21,7 +21,7 @@
 %endif
 
 #define		_snap	20060916-2203
-%define         _rel    2
+%define         _rel    3
 #
 Summary:	A Stackable Unification File System
 Summary(pl):	Stakowalny, unifikuj±cy system plików
