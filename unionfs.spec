@@ -21,7 +21,7 @@
 %define         _rel    0.1
 #
 Summary:	A Stackable Unification File System
-Summary(pl.UTF-8):   Stakowalny, unifikujący system plików
+Summary(pl.UTF-8):	Stakowalny, unifikujący system plików
 Name:		unionfs
 Version:	1.3
 Release:	%{?_snap:0.%(echo %{_snap} | tr - _).}%{_rel}
@@ -62,7 +62,7 @@ miejscu.
 
 %package -n kernel%{_alt_kernel}-fs-unionfs
 Summary:	Linux driver for unionfs
-Summary(pl.UTF-8):   Sterownik Linuksa dla unionfs
+Summary(pl.UTF-8):	Sterownik Linuksa dla unionfs
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 Requires(post,postun):	/sbin/depmod
@@ -79,7 +79,7 @@ Sterownik Linuksa dla unionfs.
 
 %package -n kernel%{_alt_kernel}-smp-fs-unionfs
 Summary:	Linux SMP driver for unionfs
-Summary(pl.UTF-8):   Sterownik Linuksa SMP dla unionfs
+Summary(pl.UTF-8):	Sterownik Linuksa SMP dla unionfs
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 %if %{with dist_kernel}
