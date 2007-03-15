@@ -9,11 +9,16 @@
 %bcond_without	smp		# don't build SMP module
 %bcond_with	verbose		# verbose build (V=1)
 %bcond_without	vserver		# build with vserver patches
-
-%if !%{with kernel}
+%bcond_with	grsec_kernel	# build for kernel-grsecurity
+#
+%if %{without kernel}
 %undefine	with_dist_kernel
 %endif
-
+#
+%if %{with kernel} && %{with dist_kernel} && %{with grsec_kernel}
+%define	alt_kernel	grsecurity
+%endif
+#
 %ifarch sparc
 %undefine	with_smp
 %endif
