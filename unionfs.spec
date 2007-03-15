@@ -3,12 +3,13 @@
 %bcond_without	kernel		# don't build kernel modules
 %bcond_without	userspace	# don't build userspace programs
 %bcond_without	dist_kernel	# without distribution kernel
+%bcond_without	up		# don't build UP module
 %bcond_without	smp		# don't build SMP module
 %bcond_with	verbose		# verbose build (V=1)
 %bcond_without	vserver		# build with vserver patches
 %bcond_with	grsec_kernel	# build for kernel-grsecurity
 #
-%if !%{with kernel}
+%if %{without kernel}
 %undefine	with_dist_kernel
 %endif
 #
@@ -21,7 +22,7 @@
 %endif
 
 #define		_snap	20060916-2203
-%define         _rel    3
+%define         _rel    4
 #
 Summary:	A Stackable Unification File System
 Summary(pl):	Stakowalny, unifikuj±cy system plików
@@ -152,9 +153,11 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %if %{with kernel}
+%if %{with up} || %{without dist_kernel}
 %files -n kernel%{_alt_kernel}-fs-unionfs
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}/kernel/fs/*.ko*
+%endif
 
 %if %{with smp} && %{with dist_kernel}
 %files -n kernel%{_alt_kernel}-smp-fs-unionfs
