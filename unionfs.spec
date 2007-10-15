@@ -22,7 +22,7 @@
 %endif
 
 #define		_snap	20060916-2203
-%define		_rel	drbd.spec
+%define		_rel	55
 #
 Summary:	A Stackable Unification File System
 Summary(pl):	Stakowalny, unifikuj±cy system plików
