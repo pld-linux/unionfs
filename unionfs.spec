@@ -25,18 +25,19 @@
 
 #define		_snap	20060916-2203
 %define		_rel	56
+%define		pname	unionfs
 Summary:	A Stackable Unification File System
 Summary(pl):	Stakowalny, unifikuj±cy system plików
-Name:		unionfs
+Name:		%{pname}%{_alt_kernel}
 Version:	1.2
 Release:	%{?_snap:0.%(echo %{_snap} | tr - _).}%{_rel}
 License:	GPL v2
 Group:		Base/Kernel
-#Source0:	ftp://ftp.fsl.cs.sunysb.edu/pub/unionfs/snapshots/%{name}-%{_snap}.tar.gz
-Source0:	ftp://ftp.fsl.cs.sunysb.edu/pub/unionfs/%{name}-%{version}.tar.gz
+#Source0:	ftp://ftp.fsl.cs.sunysb.edu/pub/unionfs/snapshots/%{pname}-%{_snap}.tar.gz
+Source0:	ftp://ftp.fsl.cs.sunysb.edu/pub/unionfs/%{pname}-%{version}.tar.gz
 # Source0-md5:	2a8c6ef320efc43af91074ab47046f09
-Patch0:		%{name}-build.patch
-Patch1:		%{name}-vserver.patch
+Patch0:		%{pname}-build.patch
+Patch1:		%{pname}-vserver.patch
 URL:		http://www.filesystems.org/project-unionfs.html
 %if %{with kernel}
 %if %{with dist_kernel}
@@ -102,7 +103,7 @@ Linux SMP driver unionfs.
 Sterownik Linuksa SMP dla unionfs.
 
 %prep
-%setup -q %{?_snap:-n %{name}-%{_snap}}
+%setup -q -n %{pname}-%{!?_snap:%{version}}%{?_snap:-%{_snap}}
 %patch0 -p1
 %{?with_vserver:%patch1 -p1}
 
