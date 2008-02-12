@@ -24,7 +24,7 @@
 %endif
 
 #define		_snap	20060916-2203
-%define		_rel	60
+%define		_rel	61
 %define		pname	unionfs
 Summary:	A Stackable Unification File System
 Summary(pl):	Stakowalny, unifikuj±cy system plików
