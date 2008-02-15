@@ -7,7 +7,6 @@
 %bcond_without	smp		# don't build SMP module
 %bcond_with	verbose		# verbose build (V=1)
 %bcond_without	vserver		# build with vserver patches
-%bcond_with	grsec_kernel	# build for kernel-grsecurity
 
 %ifarch sparc
 %undefine	with_smp
@@ -16,21 +15,17 @@
 %if %{without kernel}
 %undefine	with_dist_kernel
 %endif
-%if %{with kernel} && %{with dist_kernel} && %{with grsec_kernel}
-%define	alt_kernel	grsecurity
-%endif
 %if "%{_alt_kernel}" != "%{nil}"
 %undefine	with_userspace
 %endif
 
 #define		_snap	20060916-2203
-%define		_rel	61
 %define		pname	unionfs
 Summary:	A Stackable Unification File System
 Summary(pl):	Stakowalny, unifikuj±cy system plików
 Name:		%{pname}%{_alt_kernel}
 Version:	1.2
-Release:	%{?_snap:0.%(echo %{_snap} | tr - _).}%{_rel}
+Release:	62
 License:	GPL v2
 Group:		Base/Kernel
 #Source0:	ftp://ftp.fsl.cs.sunysb.edu/pub/unionfs/snapshots/%{pname}-%{_snap}.tar.gz
@@ -71,13 +66,9 @@ miejscu.
 %package -n kernel%{_alt_kernel}-fs-unionfs
 Summary:	Linux driver for unionfs
 Summary(pl):	Sterownik Linuksa dla unionfs
-Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
+%{?with_dist_kernel:Requires:	kernel%{_alt_kernel}(vermagic) = %{_kernel_ver}}
 Requires(post,postun):	/sbin/depmod
-%if %{with dist_kernel}
-%requires_releq_kernel_up
-Requires(postun):	%releq_kernel_up
-%endif
 
 %description -n kernel%{_alt_kernel}-fs-unionfs
 Linux driver for unionfs.
@@ -88,13 +79,9 @@ Sterownik Linuksa dla unionfs.
 %package -n kernel%{_alt_kernel}-smp-fs-unionfs
 Summary:	Linux SMP driver for unionfs
 Summary(pl):	Sterownik Linuksa SMP dla unionfs
-Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
-%if %{with dist_kernel}
-%requires_releq_kernel_smp
-Requires(postun):	%releq_kernel_smp
-%endif
-Provides:	kernel%{_alt_kernel}-unionfs = %{version}-%{_rel}@%{_kernel_ver_str}
+%{?with_dist_kernel:Requires:	kernel%{_alt_kernel}-smp(vermagic) = %{_kernel_ver}}
+Requires(post,postun):	/sbin/depmod
 
 %description -n kernel%{_alt_kernel}-smp-fs-unionfs
 Linux SMP driver unionfs.
