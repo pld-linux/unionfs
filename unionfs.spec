@@ -25,7 +25,7 @@ Summary:	A Stackable Unification File System
 Summary(pl):	Stakowalny, unifikuj±cy system plików
 Name:		%{pname}%{_alt_kernel}
 Version:	1.2
-Release:	62
+Release:	63
 License:	GPL v2
 Group:		Base/Kernel
 #Source0:	ftp://ftp.fsl.cs.sunysb.edu/pub/unionfs/snapshots/%{pname}-%{_snap}.tar.gz
