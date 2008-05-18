@@ -9,6 +9,7 @@ Group:		Base/Kernel
 Source0:	ftp://ftp.fsl.cs.sunysb.edu/pub/unionfs/unionfs-utils-0.x/%{name}_utils-%{version}.tar.gz
 # Source0-md5:	c88ba424a7eb196ac930ee41ef3b6f43
 URL:		http://www.filesystems.org/project-unionfs.html
+BuildRequires:	automake
 BuildRequires:	libuuid-devel
 # NB: tools do not require -libs
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -69,6 +70,7 @@ Statyczna biblioteka unionfs.
 %setup -q -n %{name}_utils-%{version}
 
 %build
+cp -f /usr/share/automake/config.sub .
 %configure
 %{__make}
 
