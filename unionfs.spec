@@ -22,7 +22,7 @@
 #define		_snap	20060916-2203
 %define		pname	unionfs
 Summary:	A Stackable Unification File System
-Summary(pl):	Stakowalny, unifikuj±cy system plików
+Summary(pl.UTF-8):	Stakowalny, unifikujÄ…cy system plikÃ³w
 Name:		%{pname}%{_alt_kernel}
 Version:	1.2
 Release:	63
@@ -53,19 +53,19 @@ software package directories, data grids, and more. Unionfs allows any
 mix of read-only and read-write branches, as well as insertion and
 deletion of branches anywhere in the fan-out.
 
-%description -l pl
-Unionfs to stakowalny, unifikuj±cy system plików, potrafi±cy ³±czyæ
-zawarto¶æ kilku katalogów (ga³êzi), zachowuj±c oddzielnie ich fizyczn±
-zawarto¶æ. Unionfs jest przydatny do zarz±dzania po³±czonym drzewem
-¼róde³, po³±czon± zawarto¶ci± podzielonych CD-ROM-ów, po³±czonymi
-oddzielnymi katalogami z pakietami programów, tabelami danych itp.
-Unionfs pozwala na dowolne mieszanie ga³êzi tylko do odczytu oraz do
-odczytu i zapisu, a tak¿e wstawianie i usuwanie ga³êzi w dowolnym
+%description -l pl.UTF-8
+Unionfs to stakowalny, unifikujÄ…cy system plikÃ³w, potrafiÄ…cy Å‚Ä…czyÄ‡
+zawartoÅ›Ä‡ kilku katalogÃ³w (gaÅ‚Ä™zi), zachowujÄ…c oddzielnie ich fizycznÄ…
+zawartoÅ›Ä‡. Unionfs jest przydatny do zarzÄ…dzania poÅ‚Ä…czonym drzewem
+ÅºrÃ³deÅ‚, poÅ‚Ä…czonÄ… zawartoÅ›ciÄ… podzielonych CD-ROM-Ã³w, poÅ‚Ä…czonymi
+oddzielnymi katalogami z pakietami programÃ³w, tabelami danych itp.
+Unionfs pozwala na dowolne mieszanie gaÅ‚Ä™zi tylko do odczytu oraz do
+odczytu i zapisu, a takÅ¼e wstawianie i usuwanie gaÅ‚Ä™zi w dowolnym
 miejscu.
 
 %package -n kernel%{_alt_kernel}-fs-unionfs
 Summary:	Linux driver for unionfs
-Summary(pl):	Sterownik Linuksa dla unionfs
+Summary(pl.UTF-8):	Sterownik Linuksa dla unionfs
 Group:		Base/Kernel
 %{?with_dist_kernel:Requires:	kernel%{_alt_kernel}(vermagic) = %{_kernel_ver}}
 Requires(post,postun):	/sbin/depmod
@@ -73,12 +73,12 @@ Requires(post,postun):	/sbin/depmod
 %description -n kernel%{_alt_kernel}-fs-unionfs
 Linux driver for unionfs.
 
-%description -n kernel%{_alt_kernel}-fs-unionfs -l pl
+%description -n kernel%{_alt_kernel}-fs-unionfs -l pl.UTF-8
 Sterownik Linuksa dla unionfs.
 
 %package -n kernel%{_alt_kernel}-smp-fs-unionfs
 Summary:	Linux SMP driver for unionfs
-Summary(pl):	Sterownik Linuksa SMP dla unionfs
+Summary(pl.UTF-8):	Sterownik Linuksa SMP dla unionfs
 Group:		Base/Kernel
 %{?with_dist_kernel:Requires:	kernel%{_alt_kernel}-smp(vermagic) = %{_kernel_ver}}
 Requires(post,postun):	/sbin/depmod
@@ -86,7 +86,7 @@ Requires(post,postun):	/sbin/depmod
 %description -n kernel%{_alt_kernel}-smp-fs-unionfs
 Linux SMP driver unionfs.
 
-%description -n kernel%{_alt_kernel}-smp-fs-unionfs -l pl
+%description -n kernel%{_alt_kernel}-smp-fs-unionfs -l pl.UTF-8
 Sterownik Linuksa SMP dla unionfs.
 
 %prep
